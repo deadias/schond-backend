@@ -14,14 +14,20 @@ class AutenticadorService
         $this->moradorRepository = $moradorRepository;
     }
 
+    /**
+     * Efetuar o login do usuário
+     * @var array $dados
+     */
     public function login(array $dados)
     {
         $morador = $this->moradorRepository->buscarPorEmail($dados['email']);
 
+        //Verificando a senha do usuário
         if (!password_verify($dados['senha'], $morador->getSenha())) {
             throw new AccessDeniedHttpException('Credenciais Inválidas');
         }
 
+        //Gerando um token de acesso
         $token = $token = password_hash(random_bytes(32), PASSWORD_BCRYPT);
         $morador->setToken($token);
         $this->moradorRepository->salvar($morador);
@@ -36,6 +42,10 @@ class AutenticadorService
         ];
     }
 
+    /**
+     * Efetuar o logout do usuário
+     * @var int $id
+     */
     public function logout(int $id)
     {
         $morador = $this->moradorRepository->buscarPorId($id);
@@ -50,6 +60,11 @@ class AutenticadorService
         return ['Good Bye'];
     }
 
+    /**
+     * Verificar se o usuário está autenticado
+     * @var $id
+     * @var string $token
+     */
     public function verificarAcesso(int $id, string $token)
     {
         $morador = $this->moradorRepository->buscarPorId($id);

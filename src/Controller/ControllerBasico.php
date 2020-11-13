@@ -21,6 +21,9 @@ class ControllerBasico extends AbstractController
         return $this->autenticadorService;
     }
 
+    /**
+     * Verificar se o usuário está autenticado
+     */
     protected function verificarAcesso(Request $request)
     {
         $id = $request->headers->get('id');

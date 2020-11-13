@@ -18,6 +18,10 @@ class AreaComumService
         $this->condominioService = $condominioService;
     }
 
+    /**
+     * Adicionar uma nova área comum
+     * @var array $dados
+     */
     public function adicionar(array $dados)
     {
         $condominio = $this->condominioService->buscarPorId($dados['condominioId']);
@@ -34,6 +38,11 @@ class AreaComumService
         return $this->areaComumRepository->salvar($areaComum);
     }
 
+    /**
+     * Atualizar uma área comum
+     * @var int $id
+     * @var array $dados
+     */
     public function atualizar(int $id, $dados)
     {
         $areaComum = $this->areaComumRepository->buscarPorId($id);
@@ -52,6 +61,10 @@ class AreaComumService
         return $this->areaComumRepository->salvar($areaComum);
     }
 
+    /**
+     * Desativar uma área comum
+     * @var int $id
+     */
     public function desativar(int $id)
     {
         $areaComum = $this->areaComumRepository->buscarPorId($id);
@@ -60,6 +73,10 @@ class AreaComumService
         return $this->areaComumRepository->salvar($areaComum);
     }
 
+    /**
+     * Buscar área comum por id
+     * @var int $id
+     */
     public function buscarPorId(int $id)
     {
         $areaComum = $this->areaComumRepository->buscarPorId($id);
@@ -69,6 +86,9 @@ class AreaComumService
         return $areaComum;
     }
 
+    /**
+     * Buscar áreas comuns por condomínio
+     */
     public function buscarPorCondominio($id)
     {
         return $this->areaComumRepository->buscarPorCondominio($id);

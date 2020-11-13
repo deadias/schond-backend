@@ -18,11 +18,16 @@ class AgendamentoRepository extends ServiceEntityRepository
         parent::__construct($registry, Agendamento::class);
     }
 
+    /**
+     * Consultar se o morador já tem algum agendamento em um intervalo de até 1 hora 
+     * antes ou 1 hora depois na área comum e no horário desejados
+     */
     public function consultarAgendamento(CondominioMorador $condominioMorador, AreaComum $areaComum, string $dataHora)
     {
         $qb = $this->_em->createQueryBuilder();
         $expr = $qb->expr();
 
+        //Aplicando uma hora a menos e uma hora a mais
         $dataInicio = \DateTime::createFromFormat('d/m/Y H:i:s', $dataHora)->modify('-60 minutes');
         $dataFim = \DateTime::createFromFormat('d/m/Y H:i:s', $dataHora)->modify('+60 minutes');
 
@@ -43,6 +48,13 @@ class AgendamentoRepository extends ServiceEntityRepository
             ->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * Consultar o total de pessoas agendadas para a área comum e período
+     * @var Condominio $condominio
+     * @var AreaComum $areaComum
+     * @var string $dataHora
+     * @var int $duracao
+     */
     public function getLotacaoPorCondominioAreaData(Condominio $condominio, AreaComum $areaComum, string $dataHora, int $duracao)
     {
         $dataFormatada = \DateTime::createFromFormat('d/m/Y H:i:s', $dataHora)->format('Y-m-d H:i:s');
@@ -63,12 +75,15 @@ class AgendamentoRepository extends ServiceEntityRepository
         return $stmt->fetchColumn(0);
     }
 
+    /**
+     * Buscar agendamento por área comum
+     * @var int $id
+     */
     public function buscarPorAreaComum($id)
     {
         $qb = $this->_em->createQueryBuilder();
         return $qb->select('a')
             ->from(Agendamento::class, 'a')
-            //->join('a.areaComum', 'ac')
             ->where('a.areaComum = :id')
             ->andWhere('a.ativo = :ativo')
             ->setParameter('id', $id)
@@ -78,6 +93,11 @@ class AgendamentoRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Buscar agendamento por condomínio e morador
+     * @var int $condominioId
+     * @var int $moradorId
+     */
     public function buscarPorCondominioMorador($condominioId, $moradorId)
     {
         $qb = $this->_em->createQueryBuilder();
